@@ -19,10 +19,6 @@ public class PlayerDTO {
 
     private String successRate;
 
-    public PlayerDTO(String name) {
-        this.name = name;
-    }
-
     @Override
     public String toString() {
         return "Player {" +
