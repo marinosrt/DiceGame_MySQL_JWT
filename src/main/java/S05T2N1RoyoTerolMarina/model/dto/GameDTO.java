@@ -17,6 +17,4 @@ public class GameDTO {
 
     private String status;
 
-    private Long idPlayer;
-
 }
