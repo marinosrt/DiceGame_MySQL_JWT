@@ -10,6 +10,7 @@ import S05T2N1RoyoTerolMarina.model.exception.UnexpectedErrorException;
 import S05T2N1RoyoTerolMarina.model.repository.GamesRepository;
 import S05T2N1RoyoTerolMarina.model.repository.PlayersRepository;
 import S05T2N1RoyoTerolMarina.model.service.utils.GameUtils;
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,45 +20,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class GameServiceImplImpl implements GameService, GameUtils {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-    private PlayersRepository playersRepository;
-    private GamesRepository gamesRepository;
-
-    public GameServiceImplImpl(PlayersRepository playersRepository, GamesRepository gamesRepository) {
-        super();
-        this.playersRepository = playersRepository;
-        this.gamesRepository = gamesRepository;
-    }
+    private final PlayersRepository playersRepository;
+    private final GamesRepository gamesRepository;
 
     //region SERVICE
-
-    @Override
-    public PlayerDTO createPlayer(PlayerDTO playerDTO) {
-        Player playerRequest;
-        PlayerDTO playerDtoResponse;
-
-        try {
-            playerRequest = playerConvertEntity(playerDTO);
-            playerRequest.setName(setPlayersName(playerRequest));
-
-            if (playerRequest.getName().equalsIgnoreCase("")) {
-                return null;
-            } else {
-                playersRepository.save(playerRequest);
-                playerDtoResponse = playerConvertDTO(playerRequest);
-                playerDtoResponse.setSuccessRate(calculateRate(playerDtoResponse));
-
-                return playerDtoResponse;
-            }
-        } catch (UnexpectedErrorException e) {
-            throw new UnexpectedErrorException("Unexpected error!");
-        }
-
-    }
 
     @Override
     public GameDTO playGame(Long id) {
@@ -292,30 +263,6 @@ public class GameServiceImplImpl implements GameService, GameUtils {
                 .orElse(0.0) * 100;
 
         return String.format("%.2f%%", result);
-
-    }
-
-    @Override
-    public String setPlayersName(Player player){
-        String playerName;
-
-        if (player.getName().equalsIgnoreCase("") || player.getName().isEmpty()){
-            playerName = "ANONYMOUS";
-        } else {
-            if(!checkString(player.getName())){ // check if it already exists into the DDBB
-                playerName = player.getName();
-            } else {
-                playerName = "";
-            }
-        }
-
-        return playerName;
-    }
-
-    @Override
-    public boolean checkString(String stringName){
-
-        return playersRepository.findAll().stream().anyMatch(player -> player.getName().equalsIgnoreCase(stringName));
 
     }
 

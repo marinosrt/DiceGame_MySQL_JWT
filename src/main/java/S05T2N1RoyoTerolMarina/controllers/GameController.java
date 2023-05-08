@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,59 +21,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/players")
+@RequiredArgsConstructor
 @Tag(name = "Dice Game Controller")
 public class GameController {
 
-    private GameService gameService;
+    private final GameService gameService;
 
     private ResponseEntity<?> responseEntity;
-
-    public GameController(GameService gameService) {
-        super();
-        this.gameService = gameService;
-    }
-
-    @PostMapping("")
-    @Operation(
-            operationId = "Create a player.",
-            summary = "Fill up the information to sign up this user to be able play dice games.",
-            description = "Enter the players' name.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "406 - NOT_ACCEPTABLE",
-                            description = "The players' name already exist into the Database Response."
-                    ),
-                    @ApiResponse(
-                            responseCode = "201 - CREATED",
-                            description = "Player correctly created into the Database Response",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                examples = {@ExampleObject(name = "Player Creation", value = "Player")})
-                    ),
-                    @ApiResponse(
-                            responseCode = "500 - INTERNAL_SERVER_ERROR",
-                            description = "Error creating player Response Response."
-                    )
-            }
-    )
-    public ResponseEntity<?> createPlayer (@RequestBody PlayerDTO playerIn){
-
-        PlayerDTO playerResponse;
-
-        try {
-            playerResponse = gameService.createPlayer(playerIn);
-            if (playerResponse == null) {
-                throw new WrongThreadException("This player already exist into the Database. Please, enter a valid name.");
-            } else {
-                responseEntity = new ResponseEntity<>(playerResponse, HttpStatus.CREATED);
-            }
-        } catch (WrongThreadException e) {
-            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        } catch (UnexpectedErrorException e) {
-            responseEntity = new ResponseEntity<>("Internal server error while creating a player", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return responseEntity;
-    }
 
     @PostMapping("/{id}/games")
     @Operation(

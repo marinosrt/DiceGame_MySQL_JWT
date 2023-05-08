@@ -26,8 +26,4 @@ public interface GameUtils {
 
     String getRateFromList(List<Game> gameList);
 
-    String setPlayersName(Player player);
-
-    boolean checkString(String name);
-
 }

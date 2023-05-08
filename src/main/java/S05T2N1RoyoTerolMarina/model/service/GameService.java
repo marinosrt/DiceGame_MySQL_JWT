@@ -10,8 +10,6 @@ import java.util.List;
 @Service
 public interface GameService {
 
-    PlayerDTO createPlayer(PlayerDTO playerDTO);
-
     GameDTO playGame(Long id);
 
     List<String> getAllPlayers();
