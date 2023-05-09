@@ -15,10 +15,15 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int dice1 = (int) (Math.random() * 6 + 1);
-    private int dice2 = (int) (Math.random() * 6 + 1);
+    private int dice1;
+    private int dice2;
 
     private String status;
+
+    {
+        dice1 = (int) (Math.random() * 6 + 1);
+        dice2 = (int) (Math.random() * 6 + 1);
+    }
 
     @ManyToOne
     @JoinColumn(name = "player_id")
